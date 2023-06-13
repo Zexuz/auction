@@ -125,7 +125,6 @@ contract Auction {
         );
     }
 
-    // TODO, make sure only some address can call this
     function startAuction(uint value) internal {
         Auction memory auction = _createAuction(value);
         _auctionId = auction.id;
