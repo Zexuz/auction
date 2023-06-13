@@ -4,14 +4,14 @@ import {ContractTransactionResponse} from "ethers";
 import {ethers} from "hardhat";
 import {Auction} from "../typechain-types";
 
-describe("Auction", function () {
+describe("Auctioneer", function () {
 
   async function fixture() {
     // Contracts are deployed using the first signer/account by default
     const [owner, otherAccount] = await ethers.getSigners();
     const amount = ethers.parseEther("1.0");
 
-    const Auction = await ethers.getContractFactory("Auction");
+    const Auction = await ethers.getContractFactory("Auctioneer");
     const auction = await Auction.deploy({value: amount});
     const auctionId = 1;
 

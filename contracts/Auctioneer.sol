@@ -4,7 +4,7 @@ pragma solidity ^0.8.9;
 // Uncomment this line to use console.log
 import "hardhat/console.sol";
 
-contract Auction {
+contract Auctioneer {
     uint private constant FIVE_MINUTES_IN_SECONDS = 60 * 5;
     uint private constant ONE_HOUR_IN_SECONDS = 60 * 60;
     uint private constant MINIMUM_BID_INCREMENT_PERCENT = 2;
