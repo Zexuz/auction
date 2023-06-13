@@ -26,7 +26,7 @@ contract Auction {
         uint endTime;
         uint durationIncreaseInSecondsPerBid;
         uint highestBid;
-        address highestBidder;
+        address payable highestBidder;
         bool ended;
     }
 
@@ -41,6 +41,7 @@ contract Auction {
     constructor() payable {
         owner = payable(msg.sender);
         _auctionId = 0;
+        startAuction(msg.value);
     }
 
     function _getOrCreateBid(uint value, address bidder) internal returns (Bid memory) {
@@ -69,10 +70,37 @@ contract Auction {
         auctionBids[auctionId].bids[msg.sender] = bid;
 
         auction.highestBid = msg.value;
-        auction.highestBidder = msg.sender;
+        auction.highestBidder = payable(msg.sender);
         if (auction.endTime - block.timestamp < auction.durationIncreaseInSecondsPerBid) {
             auction.endTime = auction.endTime + auction.durationIncreaseInSecondsPerBid;
         }
+    }
+
+    function settle(uint auctionId)  external {
+        Auction storage auction = auctions[auctionId];
+        require(auction.id != 0, "Auction does not exist.");
+        require(!auction.ended, "Auction already ended.");
+        require(block.timestamp > auction.endTime, "Auction has not ended yet.");
+
+        auction.ended = true;
+        auction.highestBidder.transfer(auction.amount);
+
+        // get all bids for auction
+        AuctionBids storage bids = auctionBids[auctionId];
+        // loop through all bids
+        uint totalValue = 0;
+        for (uint i = 0; i < bids.keys.length; i++) {
+            totalValue += bids.bids[bids.keys[i]].amount;
+        }
+
+        uint replenish = totalValue * 60 / 100;
+//        uint rest = totalValue - replenish;
+//        sendToLP(rest);
+        startAuction(replenish);
+    }
+
+    function sendToLP(uint value) internal {
+        // TODO, send to LP
     }
 
 
@@ -92,13 +120,14 @@ contract Auction {
             block.timestamp + ONE_HOUR_IN_SECONDS,
             FIVE_MINUTES_IN_SECONDS,
             0,
-            address(0),
+            payable(address(0)),
             false
         );
     }
 
-    function startAuction() payable public {
-        Auction memory auction = _createAuction(msg.value);
+    // TODO, make sure only some address can call this
+    function startAuction(uint value) internal {
+        Auction memory auction = _createAuction(value);
         _auctionId = auction.id;
         auctions[auction.id] = auction;
     }
