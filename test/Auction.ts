@@ -41,7 +41,7 @@ describe("Auction", function () {
   });
 
   describe("Auction", function () {
-    it("Should set the right auctionId", async function () {
+    it("Should set the correct auctionId", async function () {
       const {auction, owner} = await loadFixture(deployOneYearLockFixture);
 
       const amount = ethers.parseEther("1.0");
@@ -77,6 +77,71 @@ describe("Auction", function () {
       const current = await auction.getAuction(1);
 
       expect(current.endTime).to.approximately(Math.floor(Date.now() / 1000) + durationInSecs, 1);
+    });
+
+
+    it('should set the correct amount', async () => {
+      const {auction, owner} = await loadFixture(deployOneYearLockFixture);
+
+      const amount = ethers.parseEther("1.0");
+      const durationInSecs = 60 * 60;
+
+      await auction.startAuction({value: amount});
+
+      const current = await auction.getAuction(1);
+
+      expect(current.amount).to.equal(amount);
+    });
+
+    it('should set the correct durationIncrease', async () => {
+      const {auction, owner} = await loadFixture(deployOneYearLockFixture);
+
+      const amount = ethers.parseEther("1.0");
+      const durationInSecs = 60 * 60;
+      const durationIncreaseInSecondsPerBid = 60 * 5;
+
+      await auction.startAuction({value: amount});
+
+      const current = await auction.getAuction(1);
+
+      expect(current.durationIncreaseInSecondsPerBid).to.equal(durationIncreaseInSecondsPerBid);
+    });
+
+
+    it('should set the correct highest bid', async () => {
+      const {auction, owner} = await loadFixture(deployOneYearLockFixture);
+
+      const amount = ethers.parseEther("1.0");
+
+      await auction.startAuction({value: amount});
+
+      const current = await auction.getAuction(1);
+
+      expect(current.highestBid).to.equal(0);
+    });
+
+    it('should set the correct highest bidder', async () => {
+      const {auction, owner} = await loadFixture(deployOneYearLockFixture);
+
+      const amount = ethers.parseEther("1.0");
+
+      await auction.startAuction({value: amount});
+
+      const current = await auction.getAuction(1);
+
+      expect(current.highestBidder).to.equal("0x0000000000000000000000000000000000000000");
+    });
+
+    it('should set the correct ended status', async () => {
+      const {auction, owner} = await loadFixture(deployOneYearLockFixture);
+
+      const amount = ethers.parseEther("1.0");
+
+      await auction.startAuction({value: amount});
+
+      const current = await auction.getAuction(1);
+
+      expect(current.ended).to.equal(false);
     });
 
   });
