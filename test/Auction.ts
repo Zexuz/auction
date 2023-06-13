@@ -238,5 +238,14 @@ describe("Auction", function () {
 
       expect(bids.length).to.equal(2);
     });
+
+    it('should throw if bid is not increased by the minimum bid increase', async () => {
+      const {auction, owner, otherAccount, auctionId} = await loadFixture(fixture);
+
+      await startAuction(auction);
+      await auction.bid(auctionId, {value: ethers.parseEther("1.0")});
+
+      await expect(auction.connect(otherAccount).bid(auctionId, {value: ethers.parseEther("1.019")})).to.be.revertedWith("Bid amount must be greater than the minimum bid increment percent.");
+    });
   });
 });

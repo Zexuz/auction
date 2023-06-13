@@ -7,6 +7,7 @@ import "hardhat/console.sol";
 contract Auction {
     uint private constant FIVE_MINUTES_IN_SECONDS = 60 * 5;
     uint private constant ONE_HOUR_IN_SECONDS = 60 * 60;
+    uint private constant MINIMUM_BID_INCREMENT_PERCENT = 2;
 
     address payable public owner;
 
@@ -56,13 +57,13 @@ contract Auction {
         require(msg.value > 0, "Bid amount must be greater than 0.");
         require(block.timestamp <= auction.endTime, "Auction already ended.");
 
-        console.log("auction.highestBid: %s, msg.value: %s", auction.highestBid, msg.value);
         Bid memory bid = _getOrCreateBid(msg.value, msg.sender);
 
         require(bid.amount > auction.highestBid, "There already is a higher bid.");
         require(auction.highestBidder != msg.sender, "You already have the highest bid.");
+        require(bid.amount >= auction.highestBid + (auction.highestBid * MINIMUM_BID_INCREMENT_PERCENT / 100), "Bid amount must be greater than the minimum bid increment percent.");
 
-        if(auctionBids[auctionId].bids[msg.sender].bidder == address(0)) {
+        if (auctionBids[auctionId].bids[msg.sender].bidder == address(0)) {
             auctionBids[auctionId].keys.push(msg.sender);
         }
         auctionBids[auctionId].bids[msg.sender] = bid;
