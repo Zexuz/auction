@@ -2,7 +2,7 @@
 pragma solidity ^0.8.9;
 
 // Uncomment this line to use console.log
-// import "hardhat/console.sol";
+import "hardhat/console.sol";
 
 contract Auction {
     uint private constant FIVE_MINUTES_IN_SECONDS = 60 * 5;
@@ -11,6 +11,12 @@ contract Auction {
     address payable public owner;
 
     uint private _auctionId;
+
+    struct Bid {
+        uint amount;
+        uint timestamp;
+        address bidder;
+    }
 
     struct Auction {
         uint id;
@@ -23,11 +29,58 @@ contract Auction {
         bool ended;
     }
 
-    mapping(uint => Auction) public auctions;
+    struct AuctionBids {
+        mapping(address => Bid) bids;
+        address[] keys;
+    }
+
+    mapping(uint => AuctionBids) internal auctionBids;
+    mapping(uint => Auction) internal auctions;
 
     constructor() payable {
         owner = payable(msg.sender);
         _auctionId = 0;
+    }
+
+    function _getOrCreateBid(uint value, address bidder) internal returns (Bid memory) {
+        Bid memory bid = auctionBids[_auctionId].bids[bidder];
+        if (bid.bidder == address(0)) {
+            return _createBid(value, bidder);
+        }
+        return _createBid(bid.amount + value, bidder);
+    }
+
+    function bid(uint auctionId) payable public {
+        Auction storage auction = auctions[auctionId];
+        require(auction.id != 0, "Auction does not exist.");
+        require(msg.value > 0, "Bid amount must be greater than 0.");
+        require(block.timestamp <= auction.endTime, "Auction already ended.");
+
+        console.log("auction.highestBid: %s, msg.value: %s", auction.highestBid, msg.value);
+        Bid memory bid = _getOrCreateBid(msg.value, msg.sender);
+
+        require(bid.amount > auction.highestBid, "There already is a higher bid.");
+        require(auction.highestBidder != msg.sender, "You already have the highest bid.");
+
+        if(auctionBids[auctionId].bids[msg.sender].bidder == address(0)) {
+            auctionBids[auctionId].keys.push(msg.sender);
+        }
+        auctionBids[auctionId].bids[msg.sender] = bid;
+
+        auction.highestBid = msg.value;
+        auction.highestBidder = msg.sender;
+        if (auction.endTime - block.timestamp < auction.durationIncreaseInSecondsPerBid) {
+            auction.endTime = auction.endTime + auction.durationIncreaseInSecondsPerBid;
+        }
+    }
+
+
+    function _createBid(uint amount, address bidder) internal returns (Bid memory){
+        return Bid(
+            amount,
+            block.timestamp,
+            bidder
+        );
     }
 
     function _createAuction(uint amount) internal returns (Auction memory){
@@ -51,6 +104,14 @@ contract Auction {
 
     function getAuction(uint auctionId) public view returns (Auction memory) {
         return auctions[auctionId];
+    }
+
+    function getBidsKeyForAuction(uint auctionId) public view returns (address[] memory) {
+        return auctionBids[auctionId].keys;
+    }
+
+    function getBidForAuction(uint auctionId, address bidder) public view returns (Bid memory) {
+        return auctionBids[auctionId].bids[bidder];
     }
 
     function getAuctionId() public view returns (uint) {
