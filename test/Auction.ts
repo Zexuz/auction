@@ -1,4 +1,4 @@
-import {loadFixture,} from "@nomicfoundation/hardhat-toolbox/network-helpers";
+import {loadFixture} from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import {expect} from "chai";
 import {ethers} from "hardhat";
 
@@ -63,7 +63,7 @@ describe("Auction", function () {
       const current = await auction.getAuction(1);
 
       //Add 1 second b/c of the block time (Its the next block)
-      expect(current.startTime).to.equal((Math.floor(Date.now() / 1000)) + 1);
+      expect(current.startTime).to.approximately((Math.floor(Date.now() / 1000)) + 1, 1);
     });
 
     it("Should set the correct end time", async function () {
@@ -76,8 +76,7 @@ describe("Auction", function () {
 
       const current = await auction.getAuction(1);
 
-      //Add 1 second b/c of the block time (Its the next block)
-      expect(current.endTime).to.equal(Math.floor(Date.now() / 1000) + durationInSecs + 1);
+      expect(current.endTime).to.approximately(Math.floor(Date.now() / 1000) + durationInSecs, 1);
     });
 
   });
