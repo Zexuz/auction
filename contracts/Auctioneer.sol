@@ -76,7 +76,7 @@ contract Auctioneer {
         }
     }
 
-    function settle(uint auctionId)  external {
+    function settle(uint auctionId) external {
         Auction storage auction = auctions[auctionId];
         require(auction.id != 0, "Auction does not exist.");
         require(!auction.ended, "Auction already ended.");
@@ -94,8 +94,8 @@ contract Auctioneer {
         }
 
         uint replenish = totalValue * 60 / 100;
-//        uint rest = totalValue - replenish;
-//        sendToLP(rest);
+        //        uint rest = totalValue - replenish;
+        //        sendToLP(rest);
         startAuction(replenish);
     }
 
