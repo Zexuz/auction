@@ -17,21 +17,18 @@ export function CountDownParent() {
     }
 
     return (
-        <CountDown endTime={auction.endTime} startTime={auction.startTime}/>
+        <CountDown endTime={auction.endTime}/>
     )
 }
 
-function CountDown({endTime, startTime}: { endTime: number, startTime: number }) {
-    const {data: auctionId} = useAuctionId();
-    const {data: auction, isLoading} = useGetAuction(auctionId);
-
+function CountDown({endTime}: { endTime: number }) {
     const timeLeft = endTime - Math.floor(Date.now() / 1000);
 
     const [countdown, setCountdown] = useState(timeLeft);
     useInterval(() => setCountdown(countdown - 1), 1000)
 
 
-    if(countdown < 0) {
+    if (countdown < 0) {
         return <p>Ended</p>
     }
 
