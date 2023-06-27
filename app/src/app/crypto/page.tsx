@@ -6,7 +6,6 @@ import Auction from "@/components/Auction";
 
 export default function Page() {
 
-
     return (
         <>
             <Connect/>

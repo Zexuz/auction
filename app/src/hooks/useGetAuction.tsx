@@ -8,14 +8,18 @@ export const useGetAuction = (auctionId: number | undefined) => {
         functionName: 'getAuction',
         args: [auctionId],
         enabled: !!auctionId,
-        select: (data: any): Auction => ({
-            id: Number(data.auctionId),
-            startTime: Number(data.startTime),
-            endTime: Number(data.endTime),
-            durationIncreaseInSecondsPerBid: Number(data.durationIncreaseInSecondsPerBid),
-            highestBid: Number(data.highestBid),
-            highestBidder: data.highestBidder as string,
-            ended: data.ended as boolean,
-        })
+        select: (data: any): Auction => {
+            return {
+                id: Number(data.id),
+                startTime: Number(data.startTime),
+                endTime: Number(data.endTime),
+                durationIncreaseInSecondsPerBid: Number(data.durationIncreaseInSecondsPerBid),
+                highestBid: Number(data.highestBid),
+                highestBidder: data.highestBidder as string,
+                ended: data.ended as boolean,
+            }
+        },
+        watch: true,
+        cacheTime: 2_000
     })
 }

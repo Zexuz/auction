@@ -1,12 +1,10 @@
 import {useAuctionId} from "@/hooks/useAuctionId";
-import {useGetAuction} from "@/hooks/useGetAuction";
 import {useState} from "react";
 import {useInterval} from "@/hooks/useInterval";
+import {useAuction} from "@/context/AuctionContext";
 
 export function CountDownParent() {
-    const {data: auctionId} = useAuctionId();
-    const {data: auction, isLoading} = useGetAuction(auctionId);
-
+    const {auction, isLoading} = useAuction();
 
     if (isLoading) {
         return <p>loading...</p>

@@ -6,5 +6,7 @@ export const useAuctionId = () => {
         ...getAuctionContractConfig(),
         functionName: 'getAuctionId',
         select: (data) => Number(data),
+        watch: true,
+        cacheTime: 2_000
     })
 }

@@ -7,3 +7,16 @@ export interface Auction {
     highestBidder: string;
     ended: boolean;
 }
+
+
+export interface BidPlacedEvent {
+    auctionId: number;
+    amount: number;
+    timestamp: number;
+    bidder: string;
+}
+
+export enum AuctionEvents {
+    AuctionCreated = 'AuctionCreated',
+    BidPlaced = 'BidPlaced',
+}

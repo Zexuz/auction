@@ -1,9 +1,8 @@
-import {useAuctionId} from "@/hooks/useAuctionId";
-import {useGetAuction} from "@/hooks/useGetAuction";
+import {useAuction} from "@/context/AuctionContext";
+import {parseEther, parseGwei, formatGwei, formatUnits} from "viem";
 
 export function HighestBid() {
-    const {data: auctionId} = useAuctionId();
-    const {data: auction, isLoading} = useGetAuction(auctionId);
+    const {auction, isLoading} = useAuction();
 
     if (isLoading) {
         return <p>loading...</p>
@@ -16,7 +15,7 @@ export function HighestBid() {
     return (
         <>
             <p>winning: {auction.highestBidder}</p>
-            <p>CurrentBid: {auction.highestBid} ETH</p>
+            <p>CurrentBid: {formatUnits(BigInt(auction.highestBid), 18)} ETH</p>
         </>
     )
 }

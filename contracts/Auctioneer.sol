@@ -13,6 +13,9 @@ contract Auctioneer {
 
     uint private _auctionId;
 
+    event AuctionStared(uint id, uint amount, uint startTime, uint endTime, uint durationIncreaseInSecondsPerBid);
+    event BidPlaced(uint auctionId, uint amount, uint timestamp, address bidder);
+
     struct Bid {
         uint amount;
         uint timestamp;
@@ -74,6 +77,7 @@ contract Auctioneer {
         if (auction.endTime - block.timestamp < auction.durationIncreaseInSecondsPerBid) {
             auction.endTime = auction.endTime + auction.durationIncreaseInSecondsPerBid;
         }
+        emit BidPlaced(auctionId, bid.amount, bid.timestamp, bid.bidder);
     }
 
     function settle(uint auctionId) external {
@@ -129,6 +133,7 @@ contract Auctioneer {
         Auction memory auction = _createAuction(value);
         _auctionId = auction.id;
         auctions[auction.id] = auction;
+        emit AuctionStared(auction.id, auction.amount, auction.startTime, auction.endTime, auction.durationIncreaseInSecondsPerBid);
     }
 
     function getAuction(uint auctionId) public view returns (Auction memory) {

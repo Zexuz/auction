@@ -1,24 +1,30 @@
-import {useState} from "react";
+import React, {useState} from "react";
 import {getAuctionContractConfig} from "@/contracts";
 import {useContractWrite, useWaitForTransaction} from "wagmi";
-import {useAuctionId} from "@/hooks/useAuctionId";
+import {parseEther} from "viem"
+import {useAuction} from "@/context/AuctionContext";
+import {Auction} from "@/types/Auction";
 
 export function BidParent() {
-    const {data: auctionId, isLoading} = useAuctionId();
+    const {auction, isLoading} = useAuction();
     if (isLoading) {
         return <p>loading...</p>
     }
 
-    if (!auctionId) {
+    if (!auction) {
         return <p>auction is null</p>
     }
 
     return (
-        <Bid auctionId={auctionId}/>
+        <Bid auction={auction}/>
     )
 }
 
-function Bid({auctionId}: { auctionId: number }) {
+interface BidProps {
+    auction: Auction
+}
+
+function Bid({auction}: BidProps) {
     const {write, data, error, isLoading, isError} = useContractWrite({
         ...getAuctionContractConfig(),
         functionName: 'bid',
@@ -40,8 +46,8 @@ function Bid({auctionId}: { auctionId: number }) {
         }
 
         write({
-            args: [BigInt(auctionId)],
-            value: BigInt(bid)
+            args: [BigInt(auction.id)],
+            value: parseEther(`${Number(bid)}`),
         });
     }
 
