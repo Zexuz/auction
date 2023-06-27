@@ -6,7 +6,6 @@ import {BidParent} from "@/components/Bid";
 
 
 export default function Auction() {
-    const currentBid = 1.24;
 
     return (
         <>
