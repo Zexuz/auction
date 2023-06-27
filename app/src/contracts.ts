@@ -1,4 +1,18 @@
-export const auctionContractConfig = {
+import {Address} from "wagmi";
+
+export const getAuctionContractConfig = () => {
+    const address = process.env.NEXT_PUBLIC_AUCTION_ADDRESS as Address;
+    if (!address) {
+        throw new Error('NEXT_PUBLIC_AUCTION_ADDRESS is not set');
+    }
+
+    return {
+        address: address,
+        abi: auctionContractConfig["abi"]
+    };
+};
+const auctionContractConfig = {
+    address: process.env.NEXT_PUBLIC_AUCTION_ADDRESS,
     "_format": "hh-sol-artifact-1",
     "contractName": "Auction",
     "sourceName": "contracts/Auction.sol",
@@ -12,54 +26,13 @@ export const auctionContractConfig = {
             "inputs": [
                 {
                     "internalType": "uint256",
-                    "name": "",
+                    "name": "auctionId",
                     "type": "uint256"
                 }
             ],
-            "name": "auctions",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "id",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "startTime",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "endTime",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "durationIncreaseInSecondsPerBid",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "highestBid",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "address",
-                    "name": "highestBidder",
-                    "type": "address"
-                },
-                {
-                    "internalType": "bool",
-                    "name": "ended",
-                    "type": "bool"
-                }
-            ],
-            "stateMutability": "view",
+            "name": "bid",
+            "outputs": [],
+            "stateMutability": "payable",
             "type": "function"
         },
         {
@@ -105,7 +78,7 @@ export const auctionContractConfig = {
                             "type": "uint256"
                         },
                         {
-                            "internalType": "address",
+                            "internalType": "address payable",
                             "name": "highestBidder",
                             "type": "address"
                         },
@@ -115,7 +88,7 @@ export const auctionContractConfig = {
                             "type": "bool"
                         }
                     ],
-                    "internalType": "struct Auction.Auction",
+                    "internalType": "struct Auctioneer.Auction",
                     "name": "",
                     "type": "tuple"
                 }
@@ -137,6 +110,66 @@ export const auctionContractConfig = {
             "type": "function"
         },
         {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "auctionId",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "address",
+                    "name": "bidder",
+                    "type": "address"
+                }
+            ],
+            "name": "getBidForAuction",
+            "outputs": [
+                {
+                    "components": [
+                        {
+                            "internalType": "uint256",
+                            "name": "amount",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "timestamp",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "address",
+                            "name": "bidder",
+                            "type": "address"
+                        }
+                    ],
+                    "internalType": "struct Auctioneer.Bid",
+                    "name": "",
+                    "type": "tuple"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "auctionId",
+                    "type": "uint256"
+                }
+            ],
+            "name": "getBidsKeyForAuction",
+            "outputs": [
+                {
+                    "internalType": "address[]",
+                    "name": "",
+                    "type": "address[]"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
             "inputs": [],
             "name": "owner",
             "outputs": [
@@ -150,10 +183,16 @@ export const auctionContractConfig = {
             "type": "function"
         },
         {
-            "inputs": [],
-            "name": "startAuction",
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "auctionId",
+                    "type": "uint256"
+                }
+            ],
+            "name": "settle",
             "outputs": [],
-            "stateMutability": "payable",
+            "stateMutability": "nonpayable",
             "type": "function"
         }
     ],
