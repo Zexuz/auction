@@ -4,6 +4,7 @@ import {useContractWrite, useWaitForTransaction} from "wagmi";
 import {parseEther} from "viem"
 import {useAuction} from "@/context/AuctionContext";
 import {Auction} from "@/types/Auction";
+import {Button, Input} from "@mui/material";
 
 export function BidParent() {
     const {auction, isLoading} = useAuction();
@@ -68,8 +69,20 @@ function Bid({auction}: BidProps) {
 
     return (
         <>
-            <input type="text" onChange={onValueChange} style={{color: "red"}}/>
-            <button disabled={isDisabled} onClick={onSubmit}>{text}</button>
+            <Input
+                type="text"
+                value={bid}
+                onChange={onValueChange}
+                placeholder="Enter bid amount"
+            />
+            <Button
+                disabled={isDisabled}
+                onClick={onSubmit}
+            >
+                {text}
+            </Button>
+
         </>
     );
 }
+

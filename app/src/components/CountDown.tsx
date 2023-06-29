@@ -1,7 +1,7 @@
-import {useAuctionId} from "@/hooks/useAuctionId";
 import {useState} from "react";
 import {useInterval} from "@/hooks/useInterval";
 import {useAuction} from "@/context/AuctionContext";
+import {Typography} from "@mui/material";
 
 export function CountDownParent() {
     const {auction, isLoading} = useAuction();
@@ -27,10 +27,17 @@ function CountDown({endTime}: { endTime: number }) {
 
 
     if (countdown < 0) {
+        //TODO, show action to settle auction and start new one
         return <p>Ended</p>
     }
 
+    const hours = Math.floor(countdown / 3600);
+    const minutes = Math.floor((countdown % 3600) / 60);
+    const seconds = Math.floor((countdown % 3600) % 60);
+
     return (
-        <p>Time-left: {countdown}</p>
+        <Typography variant="h4" component="h1" gutterBottom>
+            {hours}:{minutes}:{seconds}
+        </Typography>
     )
 }

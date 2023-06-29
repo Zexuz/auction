@@ -23,3 +23,4 @@ export const useGetAuction = (auctionId: number | undefined) => {
         cacheTime: 2_000
     })
 }
+

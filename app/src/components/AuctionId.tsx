@@ -1,4 +1,5 @@
 import {useAuction} from "@/context/AuctionContext";
+import {Centered} from "@/components/Centered";
 
 export function AuctionId() {
     const {auction, isLoading} = useAuction()
