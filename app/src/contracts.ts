@@ -226,6 +226,42 @@ const auctionContractConfig = {
                     "type": "uint256"
                 }
             ],
+            "name": "getBidsForAuction",
+            "outputs": [
+                {
+                    "components": [
+                        {
+                            "internalType": "uint256",
+                            "name": "amount",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "timestamp",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "address",
+                            "name": "bidder",
+                            "type": "address"
+                        }
+                    ],
+                    "internalType": "struct Auctioneer.Bid[]",
+                    "name": "",
+                    "type": "tuple[]"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "auctionId",
+                    "type": "uint256"
+                }
+            ],
             "name": "getBidsKeyForAuction",
             "outputs": [
                 {

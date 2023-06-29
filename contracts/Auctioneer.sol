@@ -40,6 +40,7 @@ contract Auctioneer {
 
     mapping(uint => AuctionBids) internal auctionBids;
     mapping(uint => Auction) internal auctions;
+    mapping(uint => Bid[]) internal bidsForAuction;
 
     constructor() payable {
         owner = payable(msg.sender);
@@ -71,6 +72,7 @@ contract Auctioneer {
             auctionBids[auctionId].keys.push(msg.sender);
         }
         auctionBids[auctionId].bids[msg.sender] = bid;
+        bidsForAuction[auctionId].push(bid);
 
         auction.highestBid = msg.value;
         auction.highestBidder = payable(msg.sender);
@@ -152,4 +154,7 @@ contract Auctioneer {
         return _auctionId;
     }
 
+    function getBidsForAuction(uint auctionId) public view returns (Bid[] memory) {
+        return bidsForAuction[auctionId];
+    }
 }
