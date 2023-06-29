@@ -1,5 +1,4 @@
 import Image from 'next/image'
-import env from "hardhat";
 
 export default function Home() {
 
@@ -23,7 +22,7 @@ export default function Home() {
                     {(envVarsValue.map((envVar, index) => {
                         return (
                             <p key={index}
-                                  className="font-mono font-bold">{envVar}</p>
+                               className="font-mono font-bold">{envVar}</p>
                         )
                     }))
                     }
