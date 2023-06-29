@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import env from "hardhat";
 
 export default function Home() {
 
@@ -8,12 +9,9 @@ export default function Home() {
         "NEXT_PUBLIC_NETWORK"
     ]
 
-    for (const envVar of envVars) {
-        console.log(`${envVar}: ${process.env[envVar]}`)
-        console.log(`${envVar}: ${process.env[envVar]}`)
-        console.log(`${envVar}: ${process.env[envVar]}`)
-        console.log(`${envVar}: ${process.env[envVar]}`)
-    }
+    const envVarsValue = envVars.map((envVar) => {
+        return `${envVar}: ${process.env[envVar]}`
+    })
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -21,6 +19,14 @@ export default function Home() {
                 <p
                     className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
                     Get started by editing&nbsp;
+
+                    {(envVarsValue.map((envVar, index) => {
+                        return (
+                            <p key={index}
+                                  className="font-mono font-bold">{envVar}</p>
+                        )
+                    }))
+                    }
                     <code className="font-mono font-bold">src/app/page.tsx</code>
                 </p>
                 <div
