@@ -35,9 +35,13 @@ function CountDown({endTime}: { endTime: number }) {
     const minutes = Math.floor((countdown % 3600) / 60);
     const seconds = Math.floor((countdown % 3600) % 60);
 
+    const secondsString = seconds < 10 ? `0${seconds}` : seconds;
+    const minutesString = minutes < 10 ? `0${minutes}` : minutes;
+    const hoursString = hours < 10 ? `0${hours}` : hours;
+
     return (
         <Typography variant="h4" component="h1" gutterBottom>
-            {hours}:{minutes}:{seconds}
+            {hoursString}:{minutesString}:{secondsString}
         </Typography>
     )
 }
