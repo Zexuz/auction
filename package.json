@@ -33,7 +33,5 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.9.1",
-    "minidenticons": "^4.2.0",
-    "react-jazzicon": "^1.0.4"
   }
 }
