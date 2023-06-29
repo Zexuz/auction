@@ -3,9 +3,9 @@ import {AuctionId} from "@/components/AuctionId";
 import {DisplayEth, HighestBid} from "@/components/HighestBid";
 import {CountDownParent} from "@/components/CountDown";
 import {BidParent} from "@/components/Bid";
-import {useAccount, useConnect} from "wagmi";
+import {useAccount} from "wagmi";
 import {Centered} from "@/components/Centered";
-import {Container, Grid, Typography} from "@mui/material";
+import {Box, Container, Grid, Typography} from "@mui/material";
 import {useAuction} from "@/context/AuctionContext";
 import React from "react";
 import {useGetBidsForAuction} from "@/hooks/useGetBids";
@@ -39,10 +39,11 @@ export default function Auction() {
                         <Grid item>
                             <HighestBid/>
                         </Grid>
+                        <Grid item style={{borderRight: '1px solid #ccc'}}>
+                            <Box sx={{paddingRight: '1rem'}}/>
+                        </Grid>
                         <Grid item>
-                            <Typography variant="h4" component="h1" gutterBottom>
-                                |
-                            </Typography>
+                            <Box sx={{paddingLeft: '1rem'}}/>
                         </Grid>
                         <Grid item>
                             <CountDownParent/>
@@ -57,7 +58,7 @@ export default function Auction() {
                 </Centered>
             </Container>
         </>
-    )
+    );
 }
 
 

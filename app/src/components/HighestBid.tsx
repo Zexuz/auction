@@ -36,6 +36,9 @@ export const DisplayEth = ({amount, size}: DisplayFormattedEthProps) => {
 
     return (
         <>
+            <Typography variant="h6" component="h3" gutterBottom>
+                Highest bid
+            </Typography>
             <Tooltip title={formattedHighestBidRaw} placement="top">
                 <Typography variant={typographyVariant} component={typographyComponent} gutterBottom>
                     Ξ {formattedHighestBid}
