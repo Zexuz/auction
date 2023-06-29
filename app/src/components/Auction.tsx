@@ -79,9 +79,11 @@ function Bets() {
         return <p>There are no bids yet, why not ape in?</p>
     }
 
+    const bidsSorted = bids.sort((a, b) => b.timestamp - a.timestamp)
+
     return (
         <Grid container direction="column" spacing={2}>
-            {bids.map((bid, index) => (
+            {bidsSorted.map((bid, index) => (
                 <Bid key={index} bid={bid}/>
             ))}
         </Grid>
