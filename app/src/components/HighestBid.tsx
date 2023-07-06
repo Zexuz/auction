@@ -17,16 +17,17 @@ export function HighestBid() {
     const {highestBid} = auction;
 
 
-    return <DisplayEth amount={highestBid} size={'large'}/>
+    return <DisplayEth amount={highestBid} size={'large'} showHeader={true}/>
 }
 
 
 interface DisplayFormattedEthProps {
     amount: number;
     size: 'small' | 'large'
+    showHeader?: boolean;
 }
 
-export const DisplayEth = ({amount, size}: DisplayFormattedEthProps) => {
+export const DisplayEth = ({amount, size, showHeader}: DisplayFormattedEthProps) => {
     const formattedHighestBidRaw = formatUnits(BigInt(amount), 18);
     const formattedHighestBid = parseFloat(formattedHighestBidRaw).toFixed(2);
 
@@ -36,9 +37,11 @@ export const DisplayEth = ({amount, size}: DisplayFormattedEthProps) => {
 
     return (
         <>
-            <Typography variant="h6" component="h3" gutterBottom>
-                Highest bid
-            </Typography>
+            {(showHeader &&
+                <Typography variant="h6" component="h3" gutterBottom>
+                    Highest bid
+                </Typography>
+            )}
             <Tooltip title={formattedHighestBidRaw} placement="top">
                 <Typography variant={typographyVariant} component={typographyComponent} gutterBottom>
                     Ξ {formattedHighestBid}

@@ -107,6 +107,19 @@ const auctionContractConfig = {
             "inputs": [
                 {
                     "internalType": "uint256",
+                    "name": "endTime",
+                    "type": "uint256"
+                }
+            ],
+            "name": "changeEndTime",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
                     "name": "auctionId",
                     "type": "uint256"
                 }
@@ -151,12 +164,22 @@ const auctionContractConfig = {
                             "type": "address"
                         },
                         {
+                            "internalType": "uint256",
+                            "name": "secondHighestBid",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "address",
+                            "name": "secondHighestBidder",
+                            "type": "address"
+                        },
+                        {
                             "internalType": "bool",
                             "name": "ended",
                             "type": "bool"
                         }
                     ],
-                    "internalType": "struct Auctioneer.Auction",
+                    "internalType": "struct AuctioneerSimple.Auction",
                     "name": "",
                     "type": "tuple"
                 }
@@ -210,7 +233,7 @@ const auctionContractConfig = {
                             "type": "address"
                         }
                     ],
-                    "internalType": "struct Auctioneer.Bid",
+                    "internalType": "struct AuctioneerSimple.Bid",
                     "name": "",
                     "type": "tuple"
                 }
@@ -246,7 +269,7 @@ const auctionContractConfig = {
                             "type": "address"
                         }
                     ],
-                    "internalType": "struct Auctioneer.Bid[]",
+                    "internalType": "struct AuctioneerSimple.Bid[]",
                     "name": "",
                     "type": "tuple[]"
                 }
@@ -284,6 +307,19 @@ const auctionContractConfig = {
                 }
             ],
             "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "auctionId",
+                    "type": "uint256"
+                }
+            ],
+            "name": "reclaimForAuction",
+            "outputs": [],
+            "stateMutability": "nonpayable",
             "type": "function"
         },
         {
