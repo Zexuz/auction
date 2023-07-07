@@ -4,7 +4,7 @@ import {useContractWrite, useWaitForTransaction} from "wagmi";
 import {parseEther} from "viem"
 import {useAuction} from "@/context/AuctionContext";
 import {Auction} from "@/types/Auction";
-import {Button, Input} from "@mui/material";
+import {Box, Button, Grid, Input, TextField} from "@mui/material";
 
 export function BidParent() {
     const {auction, isLoading} = useAuction();
@@ -37,7 +37,7 @@ function Bid({auction}: BidProps) {
     } = useWaitForTransaction({hash: data?.hash})
 
 
-    const [bid, setBid] = useState<string>("0")
+    const [bid, setBid] = useState<string | null>(null)
     const [isValueValid, setIsValueValid] = useState<boolean>(false)
 
     const onSubmit = () => {
@@ -65,24 +65,31 @@ function Bid({auction}: BidProps) {
 
 
     const isDisabled = isLoading || isPending || isError || !isValueValid
-    const text = isLoading ? "Check wallet..." : isPending ? "Pending..." : isError ? "Error" : "Bid"
+    const text = isLoading ? "Check wallet..." : isPending ? "Pending..." : isError ? "Error" : "Place bid"
 
     return (
-        <>
-            <Input
-                type="text"
-                value={bid}
-                onChange={onValueChange}
-                placeholder="Enter bid amount"
-            />
-            <Button
-                disabled={isDisabled}
-                onClick={onSubmit}
-            >
-                {text}
-            </Button>
-
-        </>
+        <Grid container spacing={2} alignItems="center" justifyContent="center">
+            <Grid item xs={10}>
+                <TextField
+                    variant="outlined"
+                    fullWidth
+                    value={bid}
+                    onChange={onValueChange}
+                    placeholder={`Ξ 31.25 or more`}
+                />
+            </Grid>
+            <Grid item xs={2}>
+                <Button
+                    color="primary"
+                    fullWidth
+                    variant="contained"
+                    disabled={isDisabled}
+                    onClick={onSubmit}
+                >
+                    {text}
+                </Button>
+            </Grid>
+        </Grid>
     );
 }
 

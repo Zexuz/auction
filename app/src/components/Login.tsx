@@ -1,22 +1,8 @@
 'use client'
 
 import {useAuth} from "@/context/AuthContext";
-import {useFetch} from "@/hooks/useFetch";
-import {useEffect} from "react";
 import {useAccount, useSignMessage} from "wagmi";
 
-interface BaseResponse<T> {
-    data: T
-    success: boolean
-}
-
-interface NonceResponse {
-    token: string
-}
-
-interface SignatureResponse {
-    jwt: string
-}
 
 export function Login() {
     const {address} = useAccount()

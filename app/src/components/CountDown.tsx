@@ -54,7 +54,9 @@ function CountDown({endTime, auctionId}: CountDownProps) {
         //TODO, show action to settle auction and start new one
         return (
             <>
-                <p>Ended</p>
+                <Typography variant="h6" component="h3" gutterBottom>
+                    Auction ends in
+                </Typography>
                 <Button variant="contained" color="primary" onClick={settle}>Settle</Button>
             </>
 
