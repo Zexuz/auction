@@ -15,27 +15,26 @@ function ResponsiveAppBar() {
 
 
     return (
-        <AppBar position="static">
-            <Container maxWidth="xl">
-                <Toolbar disableGutters>
-                    <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}/>
-                    <Box sx={{flexGrow: 0}}>
-                        {address && (
-                            <AddressWithPicture address={address.toString()}/>
-                        )}
-                    </Box>
-                    <Box sx={{flexGrow: 0}}>
-                        {isConnected && (
-                            <Button
-                                onClick={() => disconnect()}
-                                sx={{my: 2, color: 'white', display: 'block'}}
-                            >
-                                Disconnect from {connector?.name}
-                            </Button>
-                        )}
-                    </Box>
-                </Toolbar>
-            </Container>
+        <AppBar position="static" sx={{backgroundColor: '#ffffff', boxShadow: 'none'}}>
+            <Toolbar>
+                <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}/>
+                <Box sx={{flexGrow: 0, paddingRight: '1rem'}}>
+                    {address && (
+                        <AddressWithPicture address={address.toString()}/>
+                    )}
+                </Box>
+                <Box sx={{flexGrow: 0}}>
+                    {isConnected && (
+                        <Button
+                            variant="contained"
+                            onClick={() => disconnect()}
+                            sx={{my: 2, color: 'white', display: 'block'}}
+                        >
+                            Disconnect from {connector?.name}
+                        </Button>
+                    )}
+                </Box>
+            </Toolbar>
         </AppBar>
     );
 }
