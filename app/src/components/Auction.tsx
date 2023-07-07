@@ -1,9 +1,7 @@
 "use client"
-import {AuctionId} from "@/components/AuctionId";
 import {DisplayEth, HighestBid} from "@/components/HighestBid";
 import {CountDownParent} from "@/components/CountDown";
 import {BidParent} from "@/components/Bid";
-import {Centered} from "@/components/Centered";
 import {Box, Container, Grid, Paper, Typography} from "@mui/material";
 import {useAuction} from "@/context/AuctionContext";
 import React from "react";
@@ -44,7 +42,7 @@ export default function Auction() {
                     <Grid item xs={12}>
                         <BidParent/>
                     </Grid>
-                    <Grid item xs={12} style={{marginLeft: '1rem'}}>
+                    <Grid item xs={12}>
                         <Bets/>
                     </Grid>
                 </Grid>
@@ -75,7 +73,7 @@ function Bets() {
     const bidsSorted = bids.sort((a, b) => b.timestamp - a.timestamp)
 
     return (
-        <Grid container direction="column" spacing={2}>
+        <Grid container direction="column">
             {bidsSorted.map((bid, index) => (
                 <Bid key={index} bid={bid}/>
             ))}
@@ -85,7 +83,7 @@ function Bets() {
 
 const Bid = ({bid}: { bid: any }) => {
     return (
-        <Grid container alignItems="center" justifyContent="space-between" spacing={2}>
+        <Grid container alignItems="center" justifyContent="space-between" style={{borderBottom: '1px solid #ccc'}}>
             <Grid item>
                 <Grid container alignItems="center" spacing={2}>
                     <Grid item>
