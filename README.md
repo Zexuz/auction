@@ -1,3 +1,1 @@
 # auction
-
-Test
