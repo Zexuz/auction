@@ -5,7 +5,9 @@ export default function Home() {
     const envVars = [
         "NEXT_PUBLIC_AUCTION_ADDRESS",
         "NEXT_PUBLIC_INFURA_API_KEY",
-        "NEXT_PUBLIC_NETWORK"
+        "NEXT_PUBLIC_NETWORK",
+        "NEXT_PUBLIC_IDP",
+        "NEXT_PUBLIC_CHAT",
     ]
 
     const envVarsValue = envVars.map((envVar) => {

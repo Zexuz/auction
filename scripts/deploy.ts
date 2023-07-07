@@ -53,7 +53,7 @@ async function setupContractWithBids(auction: AuctioneerSimple & {
 function writeToEnvFile(lockaddress: string, address: string) {
     const fs = require("fs");
     const path = require("path");
-    const envPath = path.resolve(__dirname, "../app/.env");
+    const envPath = path.resolve(__dirname, "../app/.env.local");
     const envExists = fs.existsSync(envPath);
 
     if (envExists) {

@@ -6,44 +6,54 @@ import {useEffect} from "react";
 import {useAccount, useSignMessage} from "wagmi";
 
 interface BaseResponse<T> {
-  data: T
-  success: boolean
+    data: T
+    success: boolean
 }
 
 interface NonceResponse {
-  token: string
+    token: string
 }
 
 interface SignatureResponse {
-  jwt: string
+    jwt: string
 }
 
 export function Login() {
-  const {address} = useAccount()
-  const {signMessageAsync} = useSignMessage()
-  const {setJwt} = useAuth();
+    const {address} = useAccount()
+    const {signMessageAsync} = useSignMessage()
+    const {setJwt} = useAuth();
 
+    const getSettings = () => {
 
-  const Login = async () => {
-    const signingTokenResponse = await fetch(`http://localhost:3000/api/v1/nonce?publicAddress=${address}`, {method: 'GET'}).then(res => res.json());
-    console.log(signingTokenResponse.data.token);
-    const signingToken = signingTokenResponse.data.token;
+        const baseUrl = process.env.NEXT_PUBLIC_IDP;
+        if (!baseUrl) throw new Error(`Environment variable 'NEXT_PUBLIC_IDP' is not set`);
 
-    const signature = await signMessageAsync({message: signingToken});
+        return {
+            baseUrl,
+        }
+    }
 
-    const signatureResponse = await fetch(`http://localhost:3000/api/v1/nonce`, {
-      method: 'POST',
-      body: JSON.stringify({jwtToken: signingToken, signature})
-    }).then(res => res.json());
+    const Login = async () => {
+        const {baseUrl} = getSettings();
+        const signingTokenResponse = await fetch(`${baseUrl}/api/v1/auth?publicAddress=${address}`, {method: 'GET'}).then(res => res.json());
+        console.log(signingTokenResponse.token);
+        const signingToken = signingTokenResponse.token;
 
-    setJwt(signatureResponse.data.jwt);
-  };
+        const signature = await signMessageAsync({message: signingToken});
 
-  return (
-    <div>
-      {address}
-      <br/>
-      <button onClick={Login}>Login</button>
-    </div>
-  )
+        const signatureResponse = await fetch(`${baseUrl}/api/v1/auth`, {
+            method: 'POST',
+            body: JSON.stringify({jwtToken: signingToken, signature})
+        }).then(res => res.json());
+
+        setJwt(signatureResponse.jwt);
+    };
+
+    return (
+        <div>
+            {address}
+            <br/>
+            <button onClick={Login}>Login</button>
+        </div>
+    )
 }
