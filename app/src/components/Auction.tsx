@@ -2,11 +2,13 @@
 import {DisplayEth, HighestBid} from "@/components/HighestBid";
 import {CountDownParent} from "@/components/CountDown";
 import {BidParent} from "@/components/Bid";
-import {Box, Container, Grid, Paper, Typography} from "@mui/material";
+import {Box, Button, Container, Grid, Paper, Typography} from "@mui/material";
 import {useAuction} from "@/context/AuctionContext";
 import React from "react";
 import {useGetBidsForAuction} from "@/hooks/useGetBids";
 import {AddressWithPicture} from "@/components/AddressWithPicture";
+import {useContractWrite, useWaitForTransaction} from "wagmi";
+import {getAuctionContractConfig} from "@/contracts";
 
 
 export default function Auction() {

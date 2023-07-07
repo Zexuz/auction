@@ -10,6 +10,8 @@ import {useAuctionEvent} from "@/hooks/useContractEvent";
 interface AuctionContextProps {
     auction: Auction,
     isLoading?: boolean
+    hasEnded: boolean
+    setHasEnded: (hasEnded: boolean) => void
 }
 
 const defaultAuction: Auction = {
@@ -25,7 +27,10 @@ const defaultAuction: Auction = {
 
 const AuctionContext = React.createContext<AuctionContextProps>({
     auction: defaultAuction,
-    isLoading: true
+    isLoading: true,
+    hasEnded: false,
+    setHasEnded: () => {
+    }
 })
 
 
@@ -36,6 +41,7 @@ interface AuctionProviderProps {
 export const AuctionProvider = ({children}: AuctionProviderProps) => {
     const {data: auctionId} = useAuctionId();
     const {data: auction, isLoading,} = useGetAuction(auctionId);
+    const [hasEnded, setHasEnded] = React.useState<boolean>(false);
 
     useAuctionEvent<BidPlacedEvent>(AuctionEvents.BidPlaced, (event) => {
         try {
@@ -48,7 +54,9 @@ export const AuctionProvider = ({children}: AuctionProviderProps) => {
 
     const value: AuctionContextProps = {
         auction: auction || defaultAuction,
-        isLoading: isLoading
+        isLoading: isLoading,
+        hasEnded: hasEnded,
+        setHasEnded: setHasEnded
     }
 
     return (

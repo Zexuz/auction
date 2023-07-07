@@ -4,10 +4,10 @@ import {useContractWrite, useWaitForTransaction} from "wagmi";
 import {parseEther} from "viem"
 import {useAuction} from "@/context/AuctionContext";
 import {Auction} from "@/types/Auction";
-import {Box, Button, Grid, Input, TextField} from "@mui/material";
+import {Box, Button, Grid, Input, TextField, Typography} from "@mui/material";
 
 export function BidParent() {
-    const {auction, isLoading} = useAuction();
+    const {auction, isLoading, hasEnded} = useAuction();
     if (isLoading) {
         return <p>loading...</p>
     }
@@ -16,8 +16,38 @@ export function BidParent() {
         return <p>auction is null</p>
     }
 
+    if (hasEnded) {
+        return <Settle/>
+    }
+
     return (
         <Bid auction={auction}/>
+    )
+}
+
+
+const Settle = () => {
+    const {auction} = useAuction();
+    const {write, data, error, isLoading, isError} = useContractWrite({
+        ...getAuctionContractConfig(),
+        functionName: 'settle',
+    })
+    const {
+        data: receipt,
+        isLoading: isPending,
+        isSuccess,
+    } = useWaitForTransaction({hash: data?.hash})
+
+
+    const settle = () => {
+        write({
+            args: [BigInt(auction.id)],
+        });
+    }
+
+
+    return (
+        <Button variant="contained" color="primary" fullWidth onClick={settle}>Settle</Button>
     )
 }
 
