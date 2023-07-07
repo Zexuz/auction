@@ -20,7 +20,7 @@ export const MinidenticonImg = ({address}: MinidentIconImgProps) => {
 
     const svgURI = useMemo(memoFunc, [address])
     return (
-        <Typography component={'h1'} gutterBottom>
+        <Typography component={'h1'}>
             <img src={svgURI} alt={address} {...props} />
         </Typography>
     )

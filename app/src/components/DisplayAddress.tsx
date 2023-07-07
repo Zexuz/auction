@@ -9,7 +9,7 @@ export const DisplayAddress = ({address}: DisplayAddressProps) => {
     const shortAddress = address.slice(0, 6) + "..." + address.slice(-4)
 
     return (
-        <Typography component={'h1'} gutterBottom>
+        <Typography component={'h1'}>
             {shortAddress}
         </Typography>
     )

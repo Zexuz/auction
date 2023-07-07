@@ -1,18 +1,29 @@
 'use client'
 
-import {BaseError} from 'viem'
-import {useAccount, useConnect, useDisconnect} from 'wagmi'
-import {Button} from "@mui/material";
+import {useAccount, useConnect, useDisconnect} from 'wagmi';
+import {Button, Box} from "@mui/material";
+import {BaseError} from "viem";
 
 export function Connect() {
     const {connector, isConnected} = useAccount()
-    const {connect, connectors, error, isLoading, pendingConnector} =
-        useConnect()
+    const {connect, connectors, error, isLoading, pendingConnector} = useConnect()
     const {disconnect} = useDisconnect()
 
+    if (isConnected) return (<></>);
+
     return (
-        <div>
-            <div>
+        <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            minHeight="100vh"
+        >
+            <Box
+                display="flex"
+                flexDirection="column"
+                gap={2}
+            >
                 {isConnected && (
                     <Button onClick={() => disconnect()}>
                         Disconnect from {connector?.name}
@@ -27,9 +38,10 @@ export function Connect() {
                             {isLoading && x.id === pendingConnector?.id && ' (connecting)'}
                         </Button>
                     ))}
-            </div>
+            </Box>
 
-            {error && <div>{(error as BaseError).shortMessage}</div>}
-        </div>
-    )
+            {error && <Box mt={2}>{(error as BaseError).shortMessage}</Box>}
+        </Box>
+    );
 }
+
