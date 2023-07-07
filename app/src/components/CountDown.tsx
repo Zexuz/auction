@@ -35,7 +35,8 @@ function CountDown({endTime}: CountDownProps) {
 
     const hasEnded = countdown < 0;
     useEffect(() => {
-        setHasEnded(true)
+        if (hasEnded)
+            setHasEnded(true)
     }, [hasEnded])
 
     if (hasEnded) {
