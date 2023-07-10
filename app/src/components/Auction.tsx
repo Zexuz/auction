@@ -24,7 +24,7 @@ export default function Auction({auction, setHasEnded, hasEnded}: AuctionProps) 
         router.prefetch(`/crypto/${auction.id - 1}`);
     }, [auction.id]);
 
-    const shouldSettle = auction.endTime < Date.now()
+    const shouldSettle = auction.endTime < Date.now() / 1000;
 
     return (
         <>
