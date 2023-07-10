@@ -8,6 +8,7 @@
     "start": "hardhat node",
     "deploy": "hardhat run --network localhost scripts/deploy.ts",
     "deploy:sepolia": "hardhat run --network sepolia scripts/deploy.ts",
+    "mine:once": "hardhat run --network localhost scripts/mine.ts",
     "test": "hardhat test"
   },
   "author": "",

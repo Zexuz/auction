@@ -5,8 +5,6 @@ pragma solidity ^0.8.9;
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-//TODO S:
-// - If bet is placed at the last minute, the auction should reset to 5 minutes, not extend by 5 minutes
 contract AuctioneerSimple {
     uint private constant FIVE_MINUTES_IN_SECONDS = 60 * 5;
     uint private constant ONE_HOUR_IN_SECONDS = 1 * 60;
@@ -67,7 +65,7 @@ contract AuctioneerSimple {
         require(auction.id != 0, "Auction does not exist.");
         require(msg.value > 0, "Bid amount must be greater than 0.");
         require(block.timestamp <= auction.endTime, "Auction already ended.");
-//        require(auction.highestBidder != msg.sender, "You already have the highest bid.");
+        require(auction.highestBidder != msg.sender, "You already have the highest bid.");
 
         (Bid memory bid, bool hasExistingBid) = _getOrCreateBid(msg.value, msg.sender);
 
@@ -75,6 +73,10 @@ contract AuctioneerSimple {
             require(bid.amount >= auction.highestBid + (auction.highestBid * MINIMUM_BID_INCREMENT_PERCENT / 100), "Bid amount must be greater than the minimum bid increment percent.");
         } else {
             require(bid.amount > auction.highestBid, "There already is a higher bid.");
+        }
+
+        if (bidsForAuction[auctionId].length == 0) {
+            auction.endTime = block.timestamp + ONE_HOUR_IN_SECONDS;
         }
 
         if (auctionBids[auctionId].bids[msg.sender].bidder == address(0)) {
@@ -89,7 +91,9 @@ contract AuctioneerSimple {
         auction.highestBid = bid.amount;
         auction.highestBidder = payable(msg.sender);
         if (auction.endTime - block.timestamp < auction.durationIncreaseInSecondsPerBid) {
-            auction.endTime = auction.endTime + auction.durationIncreaseInSecondsPerBid;
+            uint timeLeft = auction.endTime - block.timestamp;
+            uint timeToIncrease = auction.durationIncreaseInSecondsPerBid - timeLeft;
+            auction.endTime = auction.endTime + timeToIncrease;
         }
         emit BidPlaced(auctionId, bid.amount, bid.timestamp, bid.bidder);
     }
@@ -145,7 +149,7 @@ contract AuctioneerSimple {
             _auctionId + 1,
             amount,
             block.timestamp,
-            block.timestamp + ONE_HOUR_IN_SECONDS,
+            1910000000, // Thu Jul 11 2030 11:33:20 GMT+0000
             FIVE_MINUTES_IN_SECONDS,
             0,
             payable(address(0)),

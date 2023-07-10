@@ -1,10 +1,11 @@
 import React, {useState} from "react";
 import {getAuctionContractConfig} from "@/contracts";
-import {useContractWrite, useWaitForTransaction} from "wagmi";
-import {parseEther} from "viem"
+import {useAccount, useContractWrite, useWaitForTransaction} from "wagmi";
+import {formatUnits, parseEther} from "viem"
 import {useAuction} from "@/context/AuctionContext";
 import {Auction} from "@/types/Auction";
-import {Box, Button, Grid, Input, TextField, Typography} from "@mui/material";
+import {Box, Button, Grid, Input, InputAdornment, Stack, TextField, Typography} from "@mui/material";
+import {useGetBidsForAuction} from "@/hooks/useGetBids";
 
 
 interface BidPropsParents {
@@ -61,6 +62,9 @@ interface BidProps {
 }
 
 function Bid({auction}: BidProps) {
+    const {address} = useAccount()
+    const {data: bids, isLoading: isLoadingBids} = useGetBidsForAuction(auction?.id)
+
     const {write, data, error, isLoading, isError} = useContractWrite({
         ...getAuctionContractConfig(),
         functionName: 'bid',
@@ -72,7 +76,7 @@ function Bid({auction}: BidProps) {
     } = useWaitForTransaction({hash: data?.hash})
 
 
-    const [bid, setBid] = useState<string | null>("")
+    const [bid, setBid] = useState<string>("")
     const [isValueValid, setIsValueValid] = useState<boolean>(false)
 
     const onSubmit = () => {
@@ -81,9 +85,10 @@ function Bid({auction}: BidProps) {
             return;
         }
 
+        const value = parseEther(`${Number(bid)}`) - BigInt(myLastBid)
         write({
             args: [BigInt(auction.id)],
-            value: parseEther(`${Number(bid)}`),
+            value: value,
         });
     }
 
@@ -98,33 +103,52 @@ function Bid({auction}: BidProps) {
         setBid(value)
     }
 
+    const formatValue = (value: number) => {
+        return parseFloat(formatUnits(BigInt(value), 18));
+    }
+
+    const myLastBid = bids?.filter(bid => bid.bidder == address)?.sort((a, b) => b.amount - a.amount)?.[0]?.amount || 0
 
     const isDisabled = isLoading || isPending || isError || !isValueValid
     const text = isLoading ? "Check wallet..." : isPending ? "Pending..." : isError ? "Error" : "Place bid"
 
+    const placeHolder = `Increase to Ξ ${(formatValue(auction.highestBid) * 1.02).toFixed(2)} or more`;
+
+    const inputProps = {} as any
+
+    if (myLastBid > 0) {
+        inputProps.endAdornment =
+            <InputAdornment position="end">
+                {(parseFloat(bid.length == 0 ? "0" : bid) - formatValue(myLastBid)).toFixed(2)} Ξ
+            </InputAdornment>
+    }
+
     return (
-        <Grid container spacing={2} alignItems="center" justifyContent="center">
-            <Grid item xs={10}>
-                <TextField
-                    variant="outlined"
-                    fullWidth
-                    value={bid}
-                    onChange={onValueChange}
-                    placeholder={`Ξ 31.25 or more`}
-                />
+        <Stack>
+            <Grid container spacing={2} alignItems="center" justifyContent="center">
+                <Grid item xs={10}>
+                    <TextField
+                        variant="outlined"
+                        fullWidth
+                        value={bid}
+                        onChange={onValueChange}
+                        placeholder={placeHolder}
+                        InputProps={inputProps}
+                    />
+                </Grid>
+                <Grid item xs={2}>
+                    <Button
+                        color="primary"
+                        fullWidth
+                        variant="contained"
+                        disabled={isDisabled}
+                        onClick={onSubmit}
+                    >
+                        {text}
+                    </Button>
+                </Grid>
             </Grid>
-            <Grid item xs={2}>
-                <Button
-                    color="primary"
-                    fullWidth
-                    variant="contained"
-                    disabled={isDisabled}
-                    onClick={onSubmit}
-                >
-                    {text}
-                </Button>
-            </Grid>
-        </Grid>
+        </Stack>
     );
 }
 
