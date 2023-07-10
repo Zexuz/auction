@@ -1,6 +1,10 @@
 import {Inter} from 'next/font/google'
 import {AuthProvider} from "@/context/AuthContext";
 import "@/utils/debug";
+import ResponsiveAppBar from "@/components/NavBar";
+import React from "react";
+import {Providers} from "@/app/providers";
+import {Connect} from "@/components/Connect";
 
 const inter = Inter({subsets: ['latin']})
 
@@ -17,7 +21,22 @@ export default function RootLayout({
     return (
         <html lang="en">
         <AuthProvider>
-            <body className={inter.className}>{children}</body>
+            <body className={inter.className}>
+            <Providers>
+                <header>
+                    <ResponsiveAppBar/>
+                </header>
+
+                <main>
+                    <Connect/>
+                    {children}
+                </main>
+
+                <footer>
+                    {/* footer content here */}
+                </footer>
+            </Providers>
+            </body>
         </AuthProvider>
         </html>
     )

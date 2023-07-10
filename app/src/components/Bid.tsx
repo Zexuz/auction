@@ -6,17 +6,22 @@ import {useAuction} from "@/context/AuctionContext";
 import {Auction} from "@/types/Auction";
 import {Box, Button, Grid, Input, TextField, Typography} from "@mui/material";
 
-export function BidParent() {
-    const {auction, isLoading, hasEnded} = useAuction();
-    if (isLoading) {
-        return <p>loading...</p>
-    }
 
-    if (!auction) {
-        return <p>auction is null</p>
-    }
+interface BidPropsParents {
+    auction: Auction
+    hasEnded: boolean
+    shouldSettle: boolean
+}
+
+export function BidParent({auction, hasEnded, shouldSettle}: BidPropsParents) {
 
     if (hasEnded) {
+        // TODO: Show the winner?
+        // And the re-claim button for the user to withdraw their funds
+        return <p>Auction has ended</p>
+    }
+
+    if (shouldSettle) {
         return <Settle/>
     }
 
@@ -67,7 +72,7 @@ function Bid({auction}: BidProps) {
     } = useWaitForTransaction({hash: data?.hash})
 
 
-    const [bid, setBid] = useState<string | null>(null)
+    const [bid, setBid] = useState<string | null>("")
     const [isValueValid, setIsValueValid] = useState<boolean>(false)
 
     const onSubmit = () => {

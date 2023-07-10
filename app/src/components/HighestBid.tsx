@@ -1,22 +1,15 @@
-import {useAuction} from "@/context/AuctionContext";
-import {Grid, Tooltip, Typography} from "@mui/material";
+import {Tooltip, Typography} from "@mui/material";
 import React from "react";
 import {formatUnits} from "viem";
+import {Auction} from "@/types/Auction";
 
-export function HighestBid() {
-    const {auction, isLoading} = useAuction();
 
-    if (isLoading) {
-        return <p>loading...</p>
-    }
+interface HighestBidProps {
+    auction: Auction
+}
 
-    if (!auction) {
-        return <p>auction is null</p>
-    }
-
+export function HighestBid({auction}: HighestBidProps) {
     const {highestBid} = auction;
-
-
     return <DisplayEth amount={highestBid} size={'large'} showHeader={true}/>
 }
 

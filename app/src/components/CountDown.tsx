@@ -1,31 +1,16 @@
 import {useEffect, useState} from "react";
 import {useInterval} from "@/hooks/useInterval";
-import {useAuction} from "@/context/AuctionContext";
 import {Typography} from "@mui/material";
+import {Auction} from "@/types/Auction";
 
-export function CountDownParent() {
-    const {auction, isLoading} = useAuction();
-
-    if (isLoading) {
-        return <p>loading...</p>
-    }
-
-    if (!auction) {
-        return <p>auction is null</p>
-    }
-
-    return (
-        <CountDown endTime={auction.endTime} auctionId={auction.id}/>
-    )
-}
 
 interface CountDownProps {
-    endTime: number
-    auctionId: number
+    auction: Auction,
+    setHasEnded: (hasEnded: boolean) => void
 }
 
-function CountDown({endTime}: CountDownProps) {
-    const {setHasEnded} = useAuction();
+export function CountDown({auction, setHasEnded}: CountDownProps) {
+    const {endTime} = auction;
 
     const timeLeft = endTime - Math.floor(Date.now() / 1000);
 

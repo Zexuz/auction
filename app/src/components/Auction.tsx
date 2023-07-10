@@ -1,28 +1,30 @@
 "use client"
 import {DisplayEth, HighestBid} from "@/components/HighestBid";
-import {CountDownParent} from "@/components/CountDown";
+import {CountDown} from "@/components/CountDown";
 import {BidParent} from "@/components/Bid";
-import {Box, Button, Container, Grid, IconButton, Paper, Stack, Typography} from "@mui/material";
-import {useAuction} from "@/context/AuctionContext";
-import React from "react";
+import {Box, Container, Grid, IconButton, Stack, Typography} from "@mui/material";
+import React, {useEffect} from "react";
 import {useGetBidsForAuction} from "@/hooks/useGetBids";
 import {AddressWithPicture} from "@/components/AddressWithPicture";
-import {useContractWrite, useWaitForTransaction} from "wagmi";
-import {getAuctionContractConfig} from "@/contracts";
-import {Centered} from "@/components/Centered";
-import {ArrowBack, ArrowForward, Fingerprint} from "@mui/icons-material";
+import {ArrowBack, ArrowForward} from "@mui/icons-material";
+import {Auction} from "@/types/Auction";
+import {useRouter} from "next/navigation";
 
+interface AuctionProps {
+    auction: Auction
+    hasEnded: boolean
+    setHasEnded: (hasEnded: boolean) => void
+}
 
-export default function Auction() {
-    const {auction, isLoading} = useAuction();
+export default function Auction({auction, setHasEnded, hasEnded}: AuctionProps) {
+    const router = useRouter();
 
-    if (isLoading) {
-        return <p>loading...</p>
-    }
+    useEffect(() => {
+        router.prefetch(`/crypto/${auction.id + 1}`);
+        router.prefetch(`/crypto/${auction.id - 1}`);
+    }, [auction.id]);
 
-    if (!auction) {
-        return <p>auction is null</p>
-    }
+    const shouldSettle = auction.endTime < Date.now()
 
     return (
         <>
@@ -40,10 +42,14 @@ export default function Auction() {
                                 Auction: #{auction.id}
                             </Typography>
 
-                            <IconButton aria-label="ArrowBack" color="primary" >
+                            <IconButton aria-label="ArrowBack" color="primary" onClick={() => {
+                                router.push(`/crypto/${auction.id - 1}`);
+                            }}>
                                 <ArrowBack/>
                             </IconButton>
-                            <IconButton aria-label="ArrowForward" color="primary">
+                            <IconButton aria-label="ArrowForward" color="primary" onClick={() => {
+                                router.push(`/crypto/${auction.id + 1}`, {});
+                            }}>
                                 <ArrowForward/>
                             </IconButton>
                         </Stack>
@@ -61,7 +67,7 @@ export default function Auction() {
                                 <Box sx={{paddingLeft: '1rem'}}/>
                             </Grid>
                             <Grid item>
-                                <HighestBid/>
+                                <HighestBid auction={auction}/>
                             </Grid>
                             <Grid item style={{borderRight: '1px solid #ccc'}}>
                                 <Box sx={{paddingRight: '1rem'}}/>
@@ -70,15 +76,15 @@ export default function Auction() {
                                 <Box sx={{paddingLeft: '1rem'}}/>
                             </Grid>
                             <Grid item>
-                                <CountDownParent/>
+                                <CountDown auction={auction} setHasEnded={setHasEnded}/>
                             </Grid>
                         </Grid>
                     </Grid>
                     <Grid item xs={12}>
-                        <BidParent/>
+                        <BidParent auction={auction} hasEnded={hasEnded} shouldSettle={shouldSettle}/>
                     </Grid>
                     <Grid item xs={12}>
-                        <Bets/>
+                        <Bets auction={auction}/>
                     </Grid>
                 </Grid>
             </Container>
@@ -87,19 +93,20 @@ export default function Auction() {
 }
 
 
-function Bets() {
-    const {auction, isLoading} = useAuction();
+interface BetsProps {
+    auction: Auction
+}
+
+function Bets({auction}: BetsProps) {
     const {data: bids, isLoading: isLoadingBids} = useGetBidsForAuction(auction?.id)
 
-    if (isLoading || isLoadingBids) {
+    if (isLoadingBids) {
         return <p>loading...</p>
     }
 
     if (!auction) {
         return <p>auction is null</p>
     }
-
-    console.log(`bids: ${bids}`)
 
     if (!bids) {
         return <p>There are no bids yet, why not ape in?</p>
