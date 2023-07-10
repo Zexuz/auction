@@ -11,7 +11,6 @@ interface PageProps {
 
 export default function Page({params}: PageProps) {
     const auctionId = Number(params.id);
-
     const {data: auction, isLoading} = useGetAuction(auctionId);
 
     if (isNaN(auctionId) || auctionId < 0) {
@@ -30,6 +29,5 @@ export default function Page({params}: PageProps) {
         return <p>auction id is null</p>
     }
 
-    return (<Auction auction={auction} setHasEnded={hasEnded => true} hasEnded={auction.ended}/>)
-
+    return (<Auction auction={auction} setHasEnded={() => true} hasEnded={auction.ended}/>)
 };
