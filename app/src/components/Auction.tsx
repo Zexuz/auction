@@ -2,16 +2,28 @@
 import {DisplayEth, HighestBid} from "@/components/HighestBid";
 import {CountDownParent} from "@/components/CountDown";
 import {BidParent} from "@/components/Bid";
-import {Box, Button, Container, Grid, Paper, Typography} from "@mui/material";
+import {Box, Button, Container, Grid, IconButton, Paper, Stack, Typography} from "@mui/material";
 import {useAuction} from "@/context/AuctionContext";
 import React from "react";
 import {useGetBidsForAuction} from "@/hooks/useGetBids";
 import {AddressWithPicture} from "@/components/AddressWithPicture";
 import {useContractWrite, useWaitForTransaction} from "wagmi";
 import {getAuctionContractConfig} from "@/contracts";
+import {Centered} from "@/components/Centered";
+import {ArrowBack, ArrowForward, Fingerprint} from "@mui/icons-material";
 
 
 export default function Auction() {
+    const {auction, isLoading} = useAuction();
+
+    if (isLoading) {
+        return <p>loading...</p>
+    }
+
+    if (!auction) {
+        return <p>auction is null</p>
+    }
+
     return (
         <>
             <Container maxWidth="md">
@@ -23,10 +35,31 @@ export default function Auction() {
                     spacing={2}
                 >
                     <Grid item xs={12}>
-                        <h1>AuctionId #1</h1>
+                        <Stack direction="row">
+                            <Typography variant="h4" component="h1">
+                                Auction: #{auction.id}
+                            </Typography>
+
+                            <IconButton aria-label="ArrowBack" color="primary" >
+                                <ArrowBack/>
+                            </IconButton>
+                            <IconButton aria-label="ArrowForward" color="primary">
+                                <ArrowForward/>
+                            </IconButton>
+                        </Stack>
                     </Grid>
                     <Grid item xs={12}>
                         <Grid container>
+                            <Grid item>
+                                <DisplayEth amount={auction.amount} size={"large"} showHeader={true}
+                                            header={"Auction Amount"}/>
+                            </Grid>
+                            <Grid item style={{borderRight: '1px solid #ccc'}}>
+                                <Box sx={{paddingRight: '1rem'}}/>
+                            </Grid>
+                            <Grid item>
+                                <Box sx={{paddingLeft: '1rem'}}/>
+                            </Grid>
                             <Grid item>
                                 <HighestBid/>
                             </Grid>

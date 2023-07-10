@@ -13,6 +13,7 @@ export const useGetAuction = (auctionId: number | undefined) => {
                 id: Number(data.id),
                 startTime: Number(data.startTime),
                 endTime: Number(data.endTime),
+                amount: Number(data.amount),
                 durationIncreaseInSecondsPerBid: Number(data.durationIncreaseInSecondsPerBid),
                 highestBid: Number(data.highestBid),
                 highestBidder: data.highestBidder as string,

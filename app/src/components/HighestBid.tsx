@@ -25,9 +25,10 @@ interface DisplayFormattedEthProps {
     amount: number;
     size: 'small' | 'large'
     showHeader?: boolean;
+    header?: string;
 }
 
-export const DisplayEth = ({amount, size, showHeader}: DisplayFormattedEthProps) => {
+export const DisplayEth = ({amount, size, showHeader, header = 'Highest bid'}: DisplayFormattedEthProps) => {
     const formattedHighestBidRaw = formatUnits(BigInt(amount), 18);
     const formattedHighestBid = parseFloat(formattedHighestBidRaw).toFixed(2);
 
@@ -38,9 +39,7 @@ export const DisplayEth = ({amount, size, showHeader}: DisplayFormattedEthProps)
     return (
         <>
             {(showHeader &&
-                <Typography variant="h6" component="h3" gutterBottom>
-                    Highest bid
-                </Typography>
+                <Typography variant="h6" component="h3" gutterBottom>{header}</Typography>
             )}
             <Tooltip title={formattedHighestBidRaw} placement="top">
                 <Typography variant={typographyVariant} component={typographyComponent}>

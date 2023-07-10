@@ -16,6 +16,7 @@ interface AuctionContextProps {
 
 const defaultAuction: Auction = {
     id: 0,
+    amount: 0,
     startTime: 0,
     endTime: 0,
     highestBid: 0,

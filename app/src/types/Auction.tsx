@@ -1,5 +1,6 @@
 export interface Auction {
     id: number;
+    amount: number;
     startTime: number;
     endTime: number;
     durationIncreaseInSecondsPerBid: number;
