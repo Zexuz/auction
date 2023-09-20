@@ -20,8 +20,8 @@ export default function Auction({auction, setHasEnded, hasEnded}: AuctionProps) 
     const router = useRouter();
 
     useEffect(() => {
-        router.prefetch(`/crypto/${auction.id + 1}`);
-        router.prefetch(`/crypto/${auction.id - 1}`);
+        router.prefetch(`/${auction.id + 1}`);
+        router.prefetch(`/${auction.id - 1}`);
     }, [auction.id]);
 
     const shouldSettle = auction.endTime < Date.now() / 1000;
@@ -43,12 +43,12 @@ export default function Auction({auction, setHasEnded, hasEnded}: AuctionProps) 
                             </Typography>
 
                             <IconButton aria-label="ArrowBack" color="primary" onClick={() => {
-                                router.push(`/crypto/${auction.id - 1}`);
+                                router.push(`/${auction.id - 1}`);
                             }}>
                                 <ArrowBack/>
                             </IconButton>
                             <IconButton aria-label="ArrowForward" color="primary" onClick={() => {
-                                router.push(`/crypto/${auction.id + 1}`, {});
+                                router.push(`/${auction.id + 1}`, {});
                             }}>
                                 <ArrowForward/>
                             </IconButton>
